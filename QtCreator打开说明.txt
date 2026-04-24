@@ -28,3 +28,12 @@
 六、编译报错找不到 nlohmann/json.hpp？
   完整构建时若本机未安装 nlohmann_json，CMake 会自动用 FetchContent 下载（首次需联网）。
   也可自行安装后让 find_package 找到，或断网时在第三方目录放入 json 并设置 CMAKE_PREFIX_PATH。
+
+七、Git / GitHub（本仓库已关联远程）
+  远程仓库：https://github.com/azzuri10/HM_VISION
+  本机仓库目录：VisionSystem（在此目录下执行 git 命令）。
+  首次克隆后请在本仓库根目录执行一次（启用「每次 commit 后自动 push」钩子）：
+    git config core.hooksPath .githooks
+  之后每次执行 git commit，成功后会自动 git push 到 origin 当前分支（需已登录 GitHub 凭据；离线则 push 失败但不影响提交）。
+  若不想自动推送，可执行：git config --unset core.hooksPath
+  提交身份可在本仓库内修改：git config user.name / user.email

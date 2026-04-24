@@ -1,0 +1,26 @@
+# Build
+build/
+build_*/
+out/
+cmake-build-*/
+
+# Qt Creator
+.qtcreator/
+CMakeLists.txt.user
+*.user
+
+# FetchContent / cache
+_nlohmann_json*/
+_fetchcontent*/
+nlohmann/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.vs/
+*.swp
+*.swo
+
+# Python
+__pycache__/
+*.pyc

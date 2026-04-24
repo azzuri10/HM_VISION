@@ -1,0 +1,30 @@
+一、应该打开哪个 CMake 文件？
+  任选其一即可：
+  A) 仓库根目录的 CMakeLists.txt（推荐：E:\CODE\HM_VISION\CMakeLists.txt）
+  B) 子目录 VisionSystem\CMakeLists.txt（E:\CODE\HM_VISION\VisionSystem\CMakeLists.txt）
+
+二、左侧出现黄色三角警告、工程像“空的”？
+  1) 点击左侧「项目」(扳手图标)。
+  2) 在「构建套件 (Kit)」里勾选带 Qt 6.3+ 的套件（例如 Desktop Qt 6.5.3 MSVC2019 64bit）。
+  3) 若列表为空：菜单「编辑」→「Preferences」→「Kits」，检查是否已配置 Qt 与编译器。
+  4) 点击「运行 CMake」或「构建」让配置完成；成功后左侧「源代码」树会列出全部 .cpp/.h。
+
+三、CMake 报错找不到 Qt6？
+  在项目 → CMake → 当前套件的「CMake 变量」中设置：
+  CMAKE_PREFIX_PATH = 你的 Qt 安装路径，例如 C:/Qt/6.5.3/msvc2019_64
+  （该目录下应有 Qt6Config.cmake）
+
+四、OpenCV（本仓库默认路径）
+  CMake 已默认尝试：D:/opencv_install/opencv_4.10.0（即含 OpenCVConfig.cmake 的目录）。
+  若你的 OpenCV 装在其他盘，在「项目 → CMake」里修改变量：
+  - HMVISION_OPENCV_ROOT 或 OpenCV_DIR
+  然后重新运行 CMake。
+  若未找到 OpenCV，工程会自动【最小构建】（仅 Qt 界面），仍可配置运行。
+  强制仅界面：HMVISION_FORCE_MINIMAL=ON
+
+五、仍无法运行？
+  打开「编译输出」窗口，把第一条红色错误复制出来再排查。
+
+六、编译报错找不到 nlohmann/json.hpp？
+  完整构建时若本机未安装 nlohmann_json，CMake 会自动用 FetchContent 下载（首次需联网）。
+  也可自行安装后让 find_package 找到，或断网时在第三方目录放入 json 并设置 CMAKE_PREFIX_PATH。

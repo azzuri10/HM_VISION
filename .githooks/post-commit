@@ -1,0 +1,4 @@
+#!/bin/sh
+# 每次本地 commit 成功后尝试推送到 origin（需已配置远程与凭据；离线时忽略失败）
+branch=$(git symbolic-ref --short HEAD 2>/dev/null) || exit 0
+git push origin "$branch" 2>/dev/null || true

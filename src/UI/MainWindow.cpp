@@ -2,6 +2,7 @@
 
 #include "../../include/UI/AlgorithmPage.h"
 #include "../../include/UI/CameraPage.h"
+#include "../../include/UI/MainInterfaceWidget.h"
 
 #include <QAction>
 #include <QLabel>
@@ -18,8 +19,8 @@ namespace HMVision
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
 {
-    setWindowTitle("HM_VISION - Qt6 Main Window");
-    resize(1400, 900);
+    setWindowTitle("HM_VISION — 慧眼视觉");
+    resize(1600, 900);
 
     setupUi();
     setupMenus();
@@ -35,10 +36,24 @@ void MainWindow::setupUi()
     layout->addWidget(m_tabWidget);
     setCentralWidget(central);
 
-    m_cameraPage = new CameraPage(m_tabWidget);
-    m_tabWidget->addTab(m_cameraPage, "CameraPage: 相机设置");
+    m_mainInterface = new MainInterfaceWidget(m_tabWidget);
+    m_tabWidget->addTab(m_mainInterface, "主界面");
+
+    m_cameraPage = new CameraPage(
+        m_mainInterface->multiCameraView(),
+        m_mainInterface->operationLogWidget(),
+        m_mainInterface->alarmLogWidget(),
+        m_tabWidget);
+    m_tabWidget->addTab(m_cameraPage, "相机设置");
+
+    connect(
+        m_cameraPage,
+        &CameraPage::camerasChanged,
+        m_mainInterface,
+        &MainInterfaceWidget::onCameraManagerCountChanged);
+
     m_algorithmPage = new AlgorithmPage(m_tabWidget);
-    m_tabWidget->addTab(m_algorithmPage, "AlgorithmPage: 算法设置");
+    m_tabWidget->addTab(m_algorithmPage, "算法设置");
 
     auto makePlaceholder = [this](const QString& title) {
         auto* page = new QWidget(m_tabWidget);
@@ -48,10 +63,10 @@ void MainWindow::setupUi()
         return page;
     };
 
-    m_tabWidget->addTab(makePlaceholder("RecipePage: 产品配方"), "RecipePage");
-    m_tabWidget->addTab(makePlaceholder("IOPage: IO设置"), "IOPage");
-    m_tabWidget->addTab(makePlaceholder("DataPage: 数据查询"), "DataPage");
-    m_tabWidget->addTab(makePlaceholder("StatusPage: 系统状态"), "StatusPage");
+    m_tabWidget->addTab(makePlaceholder("RecipePage: 产品配方"), "配方");
+    m_tabWidget->addTab(makePlaceholder("IOPage: IO设置"), "IO");
+    m_tabWidget->addTab(makePlaceholder("DataPage: 数据查询"), "数据");
+    m_tabWidget->addTab(makePlaceholder("StatusPage: 系统状态"), "状态");
 }
 
 void MainWindow::setupMenus()
@@ -73,7 +88,7 @@ void MainWindow::setupMenus()
         statusBar()->showMessage("System stop requested", 2000);
     });
     connect(m_aboutAction, &QAction::triggered, this, [this]() {
-        statusBar()->showMessage("HM_VISION Qt6 placeholder framework", 3000);
+        statusBar()->showMessage("HM_VISION", 3000);
     });
 }
 
@@ -89,6 +104,6 @@ void MainWindow::setupToolbar()
 
 void MainWindow::setupStatusbar()
 {
-    statusBar()->showMessage("Ready | Qt 6.3.1 Framework");
+    statusBar()->showMessage("Ready | 主界面查看多路画面，「相机设置」中连接与采集");
 }
 } // namespace HMVision

@@ -8,19 +8,25 @@
   2) 在「构建套件 (Kit)」里勾选带 Qt 6.3+ 的套件（例如 Desktop Qt 6.5.3 MSVC2019 64bit）。
   3) 若列表为空：菜单「编辑」→「Preferences」→「Kits」，检查是否已配置 Qt 与编译器。
   4) 点击「运行 CMake」或「构建」让配置完成；成功后左侧「源代码」树会列出全部 .cpp/.h。
+  5) 全量工程：CMake 会一次性配置 Qt6、OpenCV、CUDA、HALCON、Paddle 等。若任一项未就绪，配置阶段会报错并指出缺失的变量或路径，请按提示在「CMake 变量」中修正后重新「运行 CMake」。
 
 三、CMake 报错找不到 Qt6？
   在项目 → CMake → 当前套件的「CMake 变量」中设置：
   CMAKE_PREFIX_PATH = 你的 Qt 安装路径，例如 C:/Qt/6.5.3/msvc2019_64
   （该目录下应有 Qt6Config.cmake）
 
-四、OpenCV（本仓库默认路径）
-  CMake 已默认尝试：D:/opencv_install/opencv_4.10.0（即含 OpenCVConfig.cmake 的目录）。
+四、OpenCV（本仓库默认路径 D:/opencv_install/opencv_4.10.0）与 GPU 版 OpenCV 所用 CUDA
+  CMake 会探测其下 x64/vc16/lib 等处的 OpenCVConfig.cmake。
+  若预编译 OpenCV 为「带 CUDA」构建，其 OpenCVConfig 会要求与构建时一致的小版本 CUDA。本机多版本并存时可设
+  HMVISION_OPENCV_CUDA_ROOT = 该 OpenCV 构建时用的 CUDA 根（如 .../CUDA/v11.6）；留空时若存在标准路径 v11.6 会自动用其给 OpenCV 配置。
+  HMVISION_CUDA_ROOT 可为另一版本（如 v11.8），用于本工程直链的 CUDAToolkit。
+  注意：仅把 D:\\opencv... 加进系统 PATH 不等于告诉 CMake；需要其一：
+  - 「项目 → CMake」里设置 OpenCV_DIR = 含有 OpenCVConfig.cmake 的目录（常见为 ...\\x64\\vc16\\lib）；或
+  - 用户/系统环境变量 OpenCV_DIR 或 OPENCV_DIR 指向上述目录（CMake 会读取）。
   若你的 OpenCV 装在其他盘，在「项目 → CMake」里修改变量：
   - HMVISION_OPENCV_ROOT 或 OpenCV_DIR
   然后重新运行 CMake。
-  若未找到 OpenCV，工程会自动【最小构建】（仅 Qt 界面），仍可配置运行。
-  强制仅界面：HMVISION_FORCE_MINIMAL=ON
+  若未找到 OpenCV 或其它全量依赖，CMake 会失败；请按错误信息补全 `OpenCV_DIR` / `HMVISION_*_ROOT` 等变量。
 
 五、仍无法运行？
   打开「编译输出」窗口，把第一条红色错误复制出来再排查。
@@ -28,6 +34,11 @@
 六、编译报错找不到 nlohmann/json.hpp？
   完整构建时若本机未安装 nlohmann_json，CMake 会自动用 FetchContent 下载（首次需联网）。
   也可自行安装后让 find_package 找到，或断网时在第三方目录放入 json 并设置 CMAKE_PREFIX_PATH。
+
+八、调试时出现「Debugger encountered an exception … code: 0x40010005 … (first chance)」？
+  多为 Windows/MSVC 的 first-chance 调试事件（调试器先收到、程序常仍可继续），不一定是崩溃。
+  若界面能正常弹出：可在「编辑 → Preferences → Debugger → CDB」中调整异常中断策略，或改用「运行」(Ctrl+R) 非调试启动验证。
+  若程序随后真的退出，再查看「应用程序输出」里的第二条错误栈。
 
 七、Git / GitHub（本仓库已关联远程）
   远程仓库：https://github.com/azzuri10/HM_VISION

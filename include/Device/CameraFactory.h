@@ -1,42 +1,25 @@
 #pragma once
 
-#include "ICamera.h"
+#include "Device/ICamera.h"
 
 #include <functional>
+#include <map>
 #include <memory>
 #include <mutex>
 #include <string>
-#include <unordered_map>
 
 namespace HMVision
 {
+using CameraCreator = std::function<ICameraPtr(const CameraConfig&)>;
+
+/// 注册各 \p CameraType 的创建器。单例，\p registerCamera / \p createCamera 内部加锁，可从多线程调用。
 class CameraFactory
 {
 public:
-    using Creator = std::function<std::shared_ptr<ICamera>()>;
+    static CameraFactory& getInstance();
 
-    static CameraFactory& getInstance()
-    {
-        static CameraFactory instance;
-        return instance;
-    }
-
-    void registerCreator(CameraType type, Creator creator)
-    {
-        std::lock_guard<std::mutex> lock(m_mutex);
-        m_creators[type] = std::move(creator);
-    }
-
-    std::shared_ptr<ICamera> create(CameraType type) const
-    {
-        std::lock_guard<std::mutex> lock(m_mutex);
-        const auto it = m_creators.find(type);
-        if (it == m_creators.end() || !it->second)
-        {
-            return nullptr;
-        }
-        return it->second();
-    }
+    void registerCamera(CameraType type, CameraCreator creator);
+    ICameraPtr createCamera(const CameraConfig& config) const;
 
 private:
     CameraFactory() = default;
@@ -44,6 +27,6 @@ private:
     CameraFactory& operator=(const CameraFactory&) = delete;
 
     mutable std::mutex m_mutex;
-    std::unordered_map<CameraType, Creator> m_creators;
+    std::map<CameraType, CameraCreator> m_creators;
 };
 } // namespace HMVision

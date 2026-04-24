@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Common/AlgorithmParams.h"
-#include "../Common/AlgorithmResult.h"
+#include "Common/AlgorithmParams.h"
+#include "Common/AlgorithmResult.h"
 
 #include <opencv2/core.hpp>
 

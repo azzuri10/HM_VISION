@@ -1,5 +1,7 @@
 # Build
 build/
+build_qt/
+build_qt*/
 build_*/
 out/
 cmake-build-*/

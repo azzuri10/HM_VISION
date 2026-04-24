@@ -9,6 +9,7 @@ namespace HMVision
 {
 class AlgorithmPage;
 class CameraPage;
+class MainInterfaceWidget;
 
 class MainWindow : public QMainWindow
 {
@@ -24,6 +25,7 @@ private:
     void setupStatusbar();
 
     QTabWidget* m_tabWidget = nullptr;
+    MainInterfaceWidget* m_mainInterface = nullptr;
     CameraPage* m_cameraPage = nullptr;
     AlgorithmPage* m_algorithmPage = nullptr;
 

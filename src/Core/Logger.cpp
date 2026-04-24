@@ -15,6 +15,21 @@ Logger& Logger::getInstance()
     return instance;
 }
 
+void Logger::info(const std::string& message)
+{
+    getInstance().log(Level::Info, message, "", 0);
+}
+
+void Logger::warning(const std::string& message)
+{
+    getInstance().log(Level::Warning, message, "", 0);
+}
+
+void Logger::error(const std::string& message)
+{
+    getInstance().log(Level::Error, message, "", 0);
+}
+
 Logger::~Logger()
 {
     std::lock_guard<std::mutex> lock(m_mutex);

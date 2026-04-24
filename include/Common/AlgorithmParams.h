@@ -9,6 +9,8 @@ namespace HMVision
 struct AlgorithmParams
 {
     std::string modelPath;
+    /// Optional: path to a text file with one class label per line
+    std::string classesFile;
     std::string device = "cpu";
     float confidenceThreshold = 0.25F;
     float nmsThreshold = 0.45F;

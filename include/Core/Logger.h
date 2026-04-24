@@ -32,6 +32,10 @@ public:
 
     static Logger& getInstance();
 
+    static void info(const std::string& message);
+    static void warning(const std::string& message);
+    static void error(const std::string& message);
+
     void initialize(const Config& config = Config());
     void setLevel(Level level);
     Level level() const;

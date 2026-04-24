@@ -5,8 +5,8 @@
 #include <functional>
 #include <memory>
 #include <mutex>
+#include <map>
 #include <string>
-#include <unordered_map>
 
 namespace HMVision
 {
@@ -40,7 +40,7 @@ private:
     static std::string normalize(const std::string& value);
 
     mutable std::mutex m_mutex;
-    std::unordered_map<AlgorithmType, Creator> m_typeCreators;
-    std::unordered_map<std::string, Creator> m_nameCreators;
+    std::map<AlgorithmType, Creator> m_typeCreators;
+    std::map<std::string, Creator> m_nameCreators;
 };
 } // namespace HMVision
